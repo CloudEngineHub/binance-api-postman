@@ -1,5 +1,36 @@
 # Changelog
 
+## 36.0.0 - 2026-01-13
+
+### Added (7)
+
+- `POST /dapi/v1/batchOrders`
+- `GET /sapi/v1/portfolio/delta-mode`
+- `POST /sapi/v1/portfolio/delta-mode`
+- `GET /sapi/v1/loan/vip/accruedInterest`
+- `GET /sapi/v1/loan/vip/interestRateHistory`
+- `GET /sapi/v2/loan/interestRateHistory`
+- `PUT /sapi/v2/localentity/deposit/provide-info`
+
+### Changed (5)
+
+- Added parameter `algoId`
+  - affected endpoints:
+    - `DELETE /fapi/v1/algoOrder`
+- Added parameter `clientAlgoId`
+  - affected endpoints:
+    - `DELETE /fapi/v1/algoOrder`
+- Deleted parameter `algoid`
+  - affected endpoints:
+    - `DELETE /fapi/v1/algoOrder`
+- Deleted parameter `clientalgoid`
+  - affected endpoints:
+    - `DELETE /fapi/v1/algoOrder`
+- Modified parameter `depositId`:
+  - type `string` → `integer`
+  - affected endpoints:
+    - `PUT /sapi/v1/localentity/broker/deposit/provide-info`
+
 ## 35.0.0 - 2025-12-19
 
 ### Added (2)

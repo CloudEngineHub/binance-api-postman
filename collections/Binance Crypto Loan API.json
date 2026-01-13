@@ -1397,6 +1397,86 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Get Flexible Loan Interest Rate History (USER_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v2/loan/interestRateHistory",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v2", "loan", "interestRateHistory"],
+                            "variable": [],
+                            "query": [
+                                {
+                                    "key": "coin",
+                                    "value": "coin_example",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "startTime",
+                                    "value": "1623319461670",
+                                    "description": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "endTime",
+                                    "value": "1641782889000",
+                                    "description": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "current",
+                                    "value": "1",
+                                    "description": "Current querying page. Start from 1; default: 1; max: 1000",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "Default: 10; max: 100",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "recvWindow",
+                                    "value": "5000",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "timestamp",
+                                    "value": "",
+                                    "description": "UTC timestamp in ms",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "signature",
+                                    "value": "",
+                                    "description": "Signature",
+                                    "disabled": false
+                                }
+                            ]
+                        }
+                    }
                 }
             ]
         }

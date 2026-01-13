@@ -1451,14 +1451,14 @@
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "algoid",
-                                    "value": "789",
+                                    "key": "algoId",
+                                    "value": "1",
                                     "description": "",
                                     "disabled": true
                                 },
                                 {
-                                    "key": "clientalgoid",
-                                    "value": "clientalgoid_example",
+                                    "key": "clientAlgoId",
+                                    "value": "1",
                                     "description": "",
                                     "disabled": true
                                 },
@@ -1611,7 +1611,7 @@
                                 {
                                     "key": "clientAlgoId",
                                     "value": "1",
-                                    "description": "A unique id among open orders. Automatically generated if not sent. Can only be string following the rule: `^[\\.A-Z\\:/a-z0-9_-]{1,36}$`",
+                                    "description": "",
                                     "disabled": true
                                 },
                                 {
@@ -1685,7 +1685,7 @@
                                 {
                                     "key": "clientAlgoId",
                                     "value": "1",
-                                    "description": "A unique id among open orders. Automatically generated if not sent. Can only be string following the rule: `^[\\.A-Z\\:/a-z0-9_-]{1,36}$`",
+                                    "description": "",
                                     "disabled": true
                                 },
                                 {

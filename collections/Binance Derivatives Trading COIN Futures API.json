@@ -1221,6 +1221,62 @@
                     }
                 },
                 {
+                    "name": "Place Multiple Orders(TRADE)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/dapi/v1/batchOrders",
+                            "host": ["{{url}}"],
+                            "path": ["dapi", "v1", "batchOrders"],
+                            "variable": [],
+                            "query": [
+                                {
+                                    "key": "batchOrders",
+                                    "value": "",
+                                    "description": "order list. Max 5 orders",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "recvWindow",
+                                    "value": "5000",
+                                    "description": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "timestamp",
+                                    "value": "",
+                                    "description": "UTC timestamp in ms",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "signature",
+                                    "value": "",
+                                    "description": "Signature",
+                                    "disabled": false
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "Auto-Cancel All Open Orders (TRADE)",
                     "request": {
                         "method": "POST",
@@ -1229,6 +1285,12 @@
                                 "key": "X-MBX-APIKEY",
                                 "value": "",
                                 "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
                                 "disabled": false
                             }
                         ],
@@ -2546,6 +2608,12 @@
                                 "key": "X-MBX-APIKEY",
                                 "value": "",
                                 "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
                                 "disabled": false
                             }
                         ],
