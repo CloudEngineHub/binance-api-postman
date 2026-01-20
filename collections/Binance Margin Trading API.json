@@ -284,7 +284,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -296,13 +296,13 @@
                                 {
                                     "key": "fromId",
                                     "value": "1",
-                                    "description": "如设置fromId, 将返回id > fromId的数据。否则将返回最新数据",
+                                    "description": "If `fromId` is set, data with `id` greater than `fromId` will be returned. Otherwise, the latest data will be returned.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "limit",
                                     "value": "500",
-                                    "description": "Default Value: 500; Max Value: 1000",
+                                    "description": "Limit on the number of data records returned per request. Default: 500; Maximum: 1000.",
                                     "disabled": true
                                 },
                                 {
@@ -817,13 +817,13 @@
                                 {
                                     "key": "fromId",
                                     "value": "1",
-                                    "description": "如设置fromId, 将返回id > fromId的数据。否则将返回最新数据",
+                                    "description": "If `fromId` is set, data with `id` greater than `fromId` will be returned. Otherwise, the latest data will be returned.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -835,7 +835,7 @@
                                 {
                                     "key": "limit",
                                     "value": "500",
-                                    "description": "Default Value: 500; Max Value: 1000",
+                                    "description": "Limit on the number of data records returned per request. Default: 500; Maximum: 1000.",
                                     "disabled": true
                                 },
                                 {
@@ -909,7 +909,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -921,7 +921,7 @@
                                 {
                                     "key": "limit",
                                     "value": "500",
-                                    "description": "Default Value: 500; Max Value: 1000",
+                                    "description": "Limit on the number of data records returned per request. Default: 500; Maximum: 1000.",
                                     "disabled": true
                                 },
                                 {
@@ -1393,7 +1393,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -1455,7 +1455,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -1615,7 +1615,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -1627,13 +1627,13 @@
                                 {
                                     "key": "fromId",
                                     "value": "1",
-                                    "description": "如设置fromId, 将返回id > fromId的数据。否则将返回最新数据",
+                                    "description": "If `fromId` is set, data with `id` greater than `fromId` will be returned. Otherwise, the latest data will be returned.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "limit",
                                     "value": "500",
-                                    "description": "Default Value: 500; Max Value: 1000",
+                                    "description": "Limit on the number of data records returned per request. Default: 500; Maximum: 1000.",
                                     "disabled": true
                                 },
                                 {
@@ -3046,7 +3046,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -3138,7 +3138,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -3224,7 +3224,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {
@@ -3576,7 +3576,7 @@
                                 {
                                     "key": "startTime",
                                     "value": "1623319461670",
-                                    "description": "只支持查询最近90天的数据",
+                                    "description": "Only supports querying data from the past 90 days.",
                                     "disabled": true
                                 },
                                 {

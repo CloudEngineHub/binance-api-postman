@@ -388,12 +388,6 @@
                                     "disabled": false
                                 },
                                 {
-                                    "key": "userName",
-                                    "value": "userName_example",
-                                    "description": "Mining account test",
-                                    "disabled": false
-                                },
-                                {
                                     "key": "pageIndex",
                                     "value": "1",
                                     "description": "Page number, empty default first page, starting from 1 ",

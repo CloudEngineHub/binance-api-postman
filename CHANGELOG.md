@@ -1,5 +1,23 @@
 # Changelog
 
+## 37.0.0 - 2026-01-20
+
+### Added (1)
+
+- Add `Alpha` Endpoints
+
+### Changed (3)
+
+- Added parameter `accountType`
+  - affected endpoints:
+    - `GET /sapi/v1/asset/dribblet`
+- Added parameter `asset`
+  - affected endpoints:
+    - `GET /sapi/v1/asset/assetDetail`
+- Deleted parameter `userName`
+  - affected endpoints:
+    - `GET /sapi/v1/mining/hash-transfer/profit/details`
+
 ## 36.0.0 - 2026-01-13
 
 ### Added (7)
