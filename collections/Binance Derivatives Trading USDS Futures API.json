@@ -1615,6 +1615,12 @@
                                     "disabled": true
                                 },
                                 {
+                                    "key": "newOrderRespType",
+                                    "value": "ACK",
+                                    "description": "\"ACK\", \"RESULT\", default \"ACK\"",
+                                    "disabled": true
+                                },
+                                {
                                     "key": "selfTradePreventionMode",
                                     "value": "EXPIRE_TAKER",
                                     "description": "`EXPIRE_TAKER`:expire taker order when STP triggers/ `EXPIRE_MAKER`:expire taker order when STP triggers/ `EXPIRE_BOTH`:expire both orders when STP triggers; default `NONE`",

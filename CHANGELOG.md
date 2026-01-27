@@ -1,5 +1,22 @@
 # Changelog
 
+## 38.0.0 - 2026-01-27
+
+### Added (1)
+
+- `GET /sapi/v1/margin/risk-based-liquidation-ratio`
+
+### Changed (2)
+
+- Added parameter `newOrderRespType`
+  - affected endpoints:
+    - `POST /fapi/v1/algoOrder`
+- Modified parameter `batchOrders`:
+  - items: property `stopPrice` added
+  - items: item property `stopPrice` added
+  - affected endpoints:
+    - `PUT /fapi/v1/batchOrders`
+
 ## 37.0.0 - 2026-01-20
 
 ### Added (1)

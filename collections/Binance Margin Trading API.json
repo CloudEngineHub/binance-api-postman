@@ -4068,6 +4068,37 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Get Margin Asset Risk-Based Liquidation Ratio (MARKET_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v1/margin/risk-based-liquidation-ratio",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v1", "margin", "risk-based-liquidation-ratio"],
+                            "variable": [],
+                            "query": []
+                        }
+                    }
                 }
             ]
         }
