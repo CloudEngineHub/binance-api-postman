@@ -1,5 +1,16 @@
 # Changelog
 
+## 39.0.0 - 2026-02-02
+
+### Changed (2)
+
+- Added parameter `limit`
+  - affected endpoints:
+    - `GET /sapi/v1/sub-account/futures/accountSummary`
+- Added parameter `page`
+  - affected endpoints:
+    - `GET /sapi/v1/sub-account/futures/accountSummary`
+
 ## 38.0.0 - 2026-01-27
 
 ### Added (1)
