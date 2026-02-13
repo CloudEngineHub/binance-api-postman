@@ -805,7 +805,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -897,7 +897,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -1567,6 +1567,86 @@
                     }
                 },
                 {
+                    "name": "Query Prevented Matches(USER_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v1/margin/myPreventedMatches",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v1", "margin", "myPreventedMatches"],
+                            "variable": [],
+                            "query": [
+                                {
+                                    "key": "symbol",
+                                    "value": "symbol_example",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "preventedMatchId",
+                                    "value": "1",
+                                    "description": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "orderId",
+                                    "value": "1",
+                                    "description": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "fromPreventedMatchId",
+                                    "value": "1",
+                                    "description": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "recvWindow",
+                                    "value": "5000",
+                                    "description": "No more than 60000",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "isIsolated",
+                                    "value": "false",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "timestamp",
+                                    "value": "",
+                                    "description": "UTC timestamp in ms",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "signature",
+                                    "value": "",
+                                    "description": "Signature",
+                                    "disabled": false
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "Query Margin Account's Trade List (USER_DATA)",
                     "request": {
                         "method": "GET",
@@ -1603,7 +1683,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -1689,7 +1769,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -1757,7 +1837,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -1819,7 +1899,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -1881,7 +1961,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -1961,7 +2041,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -2101,7 +2181,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -2175,7 +2255,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -2327,7 +2407,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -2509,7 +2589,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -2733,7 +2813,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -2807,7 +2887,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -2881,7 +2961,7 @@
                                 {
                                     "key": "isIsolated",
                                     "value": "false",
-                                    "description": "for isolated margin or not, \"TRUE\", \"FALSE\"，default \"FALSE\"",
+                                    "description": "For isolated margin or not, \"TRUE\", \"FALSE\", default \"FALSE\"",
                                     "disabled": true
                                 },
                                 {
@@ -4066,6 +4146,37 @@
                                     "disabled": false
                                 }
                             ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Margin Restricted Assets (MARKET_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v1/margin/restricted-asset",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v1", "margin", "restricted-asset"],
+                            "variable": [],
+                            "query": []
                         }
                     }
                 },

@@ -1,5 +1,12 @@
 # Changelog
 
+## 40.0.0 - 2026-02-13
+
+### Added (2)
+
+- `GET /sapi/v1/margin/myPreventedMatches`
+- `GET /sapi/v1/margin/restricted-asset`
+
 ## 39.0.0 - 2026-02-02
 
 ### Changed (2)
