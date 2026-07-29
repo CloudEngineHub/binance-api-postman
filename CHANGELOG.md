@@ -1,5 +1,11 @@
 # Changelog
 
+## 55.0.1 - 2026-07-29
+
+### Changed (1)
+
+- Enclose pre-request script to `async()`
+
 ## 55.0.0 - 2026-07-22
     
 ### Changed (2)
