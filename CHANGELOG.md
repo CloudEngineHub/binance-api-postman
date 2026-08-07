@@ -1,5 +1,11 @@
 # Changelog
 
+## 55.1.0 - 2026-08-07
+
+### Added (1)
+
+- `GET /sapi/v1/spot/asset/tags`
+
 ## 55.0.1 - 2026-07-29
 
 ### Changed (1)
@@ -7,7 +13,7 @@
 - Enclose pre-request script to `async()`
 
 ## 55.0.0 - 2026-07-22
-    
+
 ### Changed (2)
 
 - Added parameter `modifyId`
