@@ -1925,6 +1925,12 @@
                   "disabled": true
                 },
                 {
+                  "key": "needBalanceDetail",
+                  "value": "false",
+                  "description": "Whether to return the per-asset balance detail for each wallet. When `false` or omitted, the response is unchanged from current behavior.",
+                  "disabled": true
+                },
+                {
                   "key": "recvWindow",
                   "value": "5000",
                   "description": "",
@@ -2790,7 +2796,7 @@
                 {
                   "key": "beneficiaryPii",
                   "value": "beneficiaryPii_example",
-                  "description": "JSON format beneficiary Pii.",
+                  "description": "JSON format beneficiary Pii, see StandardPii section below",
                   "disabled": false
                 },
                 {

@@ -1,1192 +1,1313 @@
 {
-    "info": {
-        "name": "VIP Loan REST API",
-        "description": {
-            "content": "Access over-collateralized loan services, manage positions, and monitor collateral via the VIP Loan API.",
-            "type": "text/markdown"
-        },
-        "version": "1.0.0",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  "info": {
+    "name": "VIP Loan REST API",
+    "description": {
+      "content": "Access over-collateralized loan services, manage positions, and monitor collateral via the VIP Loan API.",
+      "type": "text/markdown"
     },
-    "event": [
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "(async () => {",
+          "    const ts = Date.now();",
+          "    let queryParamsObject = {};",
+          "    let bodyParamsObject = {};",
+          "    const postmanEnvironment = pm.environment.get('environment');",
+          "    const api_key = pm.environment.get('api-key');",
+          "    const api_secret = pm.environment.get('api-secret');",
+          "    const parameters = pm.request.url.query;",
+          "    const body = pm.request.body;",
+          "",
+          "    // set host based on env",
+          "    const normalizedEnvironment = String(postmanEnvironment || 'production').toLowerCase();",
+          "    const environmentUrlKeyMap = {",
+          "        production: 'prod_url',",
+          "        prod: 'prod_url',",
+          "        testnet: 'testnet_url',",
+          "        demo: 'demo_url'",
+          "    };",
+          "    const selectedUrlKey = environmentUrlKeyMap[normalizedEnvironment] || 'prod_url';",
+          "    const selectedUrl = pm.variables.get(selectedUrlKey) || pm.variables.get('prod_url');",
+          "",
+          "    // set host based on env",
+          "    pm.request.url.host = [selectedUrl];",
+          "",
+          "    // Collect query params",
+          "    parameters.each((param) => {",
+          "        if (param.key !== 'signature' && !is_empty(param.value) && !is_disabled(param.disabled)) {",
+          "            queryParamsObject[param.key] = param.value;",
+          "        }",
+          "    });",
+          "",
+          "    // add timestamp",
+          "    Object.assign(queryParamsObject, { timestamp: ts });",
+          "",
+          "    // Collect body params if urlencoded",
+          "    let hasUrlencodedBodyParams = false;",
+          "",
+          "    if (body) {",
+          "        const contentTypeHeader = pm.request.headers.get('Content-Type') || pm.request.headers.get('content-type') || '';",
+          "        const isFormUrlencoded = contentTypeHeader.includes('application/x-www-form-urlencoded') || body.mode === 'urlencoded';",
+          "",
+          "        if (isFormUrlencoded && body.urlencoded) {",
+          "            body.urlencoded.each((param) => {",
+          "                if (param.key !== 'signature' && !is_empty(param.value) && !is_disabled(param.disabled)) {",
+          "                    bodyParamsObject[param.key] = param.value;",
+          "                    hasUrlencodedBodyParams = true;",
+          "                }",
+          "            });",
+          "        }",
+          "    }",
+          "",
+          "    // set api key",
+          "    setOrUpdateHeaderParam('X-MBX-APIKEY', api_key);",
+          "",
+          "    // only sign if a signature param was declared and we have a secret",
+          "    if (parameters.has('signature') && api_secret) {",
+          "        // canonical query strings",
+          "        const queryStringForSign = buildQueryString(queryParamsObject);",
+          "        const bodyStringForSign = buildQueryString(bodyParamsObject);",
+          "        const totalParams = queryStringForSign + bodyStringForSign;",
+          "",
+          "        const encoder = new TextEncoder();",
+          "        const keyData = encoder.encode(api_secret);",
+          "        const msgData = encoder.encode(totalParams);",
+          "",
+          "        pm.request.url.query.clear();",
+          "",
+          "        const cryptoKey = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);",
+          "        const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, msgData);",
+          "",
+          "        const signature = Array.from(new Uint8Array(signatureBuffer))",
+          "            .map((b) => b.toString(16).padStart(2, '0'))",
+          "            .join('');",
+          "",
+          "        // update request",
+          "        const finalQueryParams = Object.assign({}, queryParamsObject, { signature });",
+          "        const finalQueryString = buildQueryString(finalQueryParams);",
+          "        pm.request.url.query = finalQueryString;",
+          "    }",
+          "",
+          "    function buildQueryString(params) {",
+          "        if (!params) return '';",
+          "",
+          "        const pairs = [];",
+          "        Object.entries(params).forEach(([key, value]) => {",
+          "            if (value !== null && value !== undefined) {",
+          "                const serializedValue = serializeValue(value);",
+          "                pairs.push(`${key}=${encodeURIComponent(serializedValue)}`);",
+          "            }",
+          "        });",
+          "",
+          "        return pairs.join('&');",
+          "    }",
+          "",
+          "    function serializeValue(value) {",
+          "        if (value === null || value === undefined) return '';",
+          "        if (Array.isArray(value) || (typeof value === 'object' && value !== null)) return JSON.stringify(value);",
+          "",
+          "        return String(value);",
+          "    }",
+          "",
+          "    function setOrUpdateHeaderParam(key, value) {",
+          "        let headers = pm.request.headers;",
+          "        let header = headers.find((header) => header.key === key);",
+          "        if (header) header.value = value;",
+          "        else pm.request.headers.add({ key, value });",
+          "    }",
+          "",
+          "    function is_disabled(val) {",
+          "        return val === true;",
+          "    }",
+          "",
+          "    function is_empty(str) {",
+          "        if (str === null || str === undefined) return true;",
+          "        if (typeof str === 'string') {",
+          "            return (",
+          "                !str ||",
+          "                str.length === 0 ||",
+          "                !/[^\\\\s]/.test(str) ||",
+          "                /^\\\\s*$/.test(str) ||",
+          "                str.replace(/\\\\s/g, '') === ''",
+          "            );",
+          "        }",
+          "        return false;",
+          "    }",
+          "",
+          "})().then(() => {",
+          "    if (typeof pm.done === 'function') pm.done();",
+          "});"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Market Data",
+      "item": [
         {
-            "listen": "prerequest",
-            "script": {
-                "exec": [
-                    "(async () => {",
-                    "    const ts = Date.now();",
-                    "    let queryParamsObject = {};",
-                    "    let bodyParamsObject = {};",
-                    "    const postmanEnvironment = pm.environment.get('environment');",
-                    "    const api_key = pm.environment.get('api-key');",
-                    "    const api_secret = pm.environment.get('api-secret');",
-                    "    const parameters = pm.request.url.query;",
-                    "    const body = pm.request.body;",
-                    "",
-                    "    // set host based on env",
-                    "    const normalizedEnvironment = String(postmanEnvironment || 'production').toLowerCase();",
-                    "    const environmentUrlKeyMap = {",
-                    "        production: 'prod_url',",
-                    "        prod: 'prod_url',",
-                    "        testnet: 'testnet_url',",
-                    "        demo: 'demo_url'",
-                    "    };",
-                    "    const selectedUrlKey = environmentUrlKeyMap[normalizedEnvironment] || 'prod_url';",
-                    "    const selectedUrl = pm.variables.get(selectedUrlKey) || pm.variables.get('prod_url');",
-                    "",
-                    "    // set host based on env",
-                    "    pm.request.url.host = [selectedUrl];",
-                    "",
-                    "    // Collect query params",
-                    "    parameters.each((param) => {",
-                    "        if (param.key !== 'signature' && !is_empty(param.value) && !is_disabled(param.disabled)) {",
-                    "            queryParamsObject[param.key] = param.value;",
-                    "        }",
-                    "    });",
-                    "",
-                    "    // add timestamp",
-                    "    Object.assign(queryParamsObject, { timestamp: ts });",
-                    "",
-                    "    // Collect body params if urlencoded",
-                    "    let hasUrlencodedBodyParams = false;",
-                    "",
-                    "    if (body) {",
-                    "        const contentTypeHeader = pm.request.headers.get('Content-Type') || pm.request.headers.get('content-type') || '';",
-                    "        const isFormUrlencoded = contentTypeHeader.includes('application/x-www-form-urlencoded') || body.mode === 'urlencoded';",
-                    "",
-                    "        if (isFormUrlencoded && body.urlencoded) {",
-                    "            body.urlencoded.each((param) => {",
-                    "                if (param.key !== 'signature' && !is_empty(param.value) && !is_disabled(param.disabled)) {",
-                    "                    bodyParamsObject[param.key] = param.value;",
-                    "                    hasUrlencodedBodyParams = true;",
-                    "                }",
-                    "            });",
-                    "        }",
-                    "    }",
-                    "",
-                    "    // set api key",
-                    "    setOrUpdateHeaderParam('X-MBX-APIKEY', api_key);",
-                    "",
-                    "    // only sign if a signature param was declared and we have a secret",
-                    "    if (parameters.has('signature') && api_secret) {",
-                    "        // canonical query strings",
-                    "        const queryStringForSign = buildQueryString(queryParamsObject);",
-                    "        const bodyStringForSign = buildQueryString(bodyParamsObject);",
-                    "        const totalParams = queryStringForSign + bodyStringForSign;",
-                    "",
-                    "        const encoder = new TextEncoder();",
-                    "        const keyData = encoder.encode(api_secret);",
-                    "        const msgData = encoder.encode(totalParams);",
-                    "",
-                    "        pm.request.url.query.clear();",
-                    "",
-                    "        const cryptoKey = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);",
-                    "        const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, msgData);",
-                    "",
-                    "        const signature = Array.from(new Uint8Array(signatureBuffer))",
-                    "            .map((b) => b.toString(16).padStart(2, '0'))",
-                    "            .join('');",
-                    "",
-                    "        // update request",
-                    "        const finalQueryParams = Object.assign({}, queryParamsObject, { signature });",
-                    "        const finalQueryString = buildQueryString(finalQueryParams);",
-                    "        pm.request.url.query = finalQueryString;",
-                    "    }",
-                    "",
-                    "    function buildQueryString(params) {",
-                    "        if (!params) return '';",
-                    "",
-                    "        const pairs = [];",
-                    "        Object.entries(params).forEach(([key, value]) => {",
-                    "            if (value !== null && value !== undefined) {",
-                    "                const serializedValue = serializeValue(value);",
-                    "                pairs.push(`${key}=${encodeURIComponent(serializedValue)}`);",
-                    "            }",
-                    "        });",
-                    "",
-                    "        return pairs.join('&');",
-                    "    }",
-                    "",
-                    "    function serializeValue(value) {",
-                    "        if (value === null || value === undefined) return '';",
-                    "        if (Array.isArray(value) || (typeof value === 'object' && value !== null)) return JSON.stringify(value);",
-                    "",
-                    "        return String(value);",
-                    "    }",
-                    "",
-                    "    function setOrUpdateHeaderParam(key, value) {",
-                    "        let headers = pm.request.headers;",
-                    "        let header = headers.find((header) => header.key === key);",
-                    "        if (header) header.value = value;",
-                    "        else pm.request.headers.add({ key, value });",
-                    "    }",
-                    "",
-                    "    function is_disabled(val) {",
-                    "        return val === true;",
-                    "    }",
-                    "",
-                    "    function is_empty(str) {",
-                    "        if (str === null || str === undefined) return true;",
-                    "        if (typeof str === 'string') {",
-                    "            return (",
-                    "                !str ||",
-                    "                str.length === 0 ||",
-                    "                !/[^\\\\s]/.test(str) ||",
-                    "                /^\\\\s*$/.test(str) ||",
-                    "                str.replace(/\\\\s/g, '') === ''",
-                    "            );",
-                    "        }",
-                    "        return false;",
-                    "    }",
-                    "",
-                    "})().then(() => {",
-                    "    if (typeof pm.done === 'function') pm.done();",
-                    "});"
-                ],
-                "type": "text/javascript"
+          "name": "Get Collateral Asset Data (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/collateral/data",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "collateral",
+                "data"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "collateralCoin",
+                  "value": "BUSD",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
             }
-        }
-    ],
-    "item": [
-        {
-            "name": "Market Data",
-            "item": [
-                {
-                    "name": "Get Collateral Asset Data (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/collateral/data",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "collateral", "data"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Query VIP Loan Fixed Rate Market (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/fixed/market",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "fixed", "market"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanCoin",
-                                    "value": "USDT",
-                                    "description": "Loan coin",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "duration",
-                                    "value": "30",
-                                    "description": "Duration in days, minimum 1",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Page number, default 1, minimum 1",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "size",
-                                    "value": "10",
-                                    "description": "Page size, default 10, range [1, 100]",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "The value cannot be greater than `60000`",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Get VIP Loan Interest Rate History (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/interestRateHistory",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "interestRateHistory"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "coin",
-                                    "value": "USDT",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "If both startTime and endTime are omitted, the most recent 90 days are returned.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "Maximum interval between startTime and endTime is 180 days. Time is based on UTC+0.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current page number, starting from 1.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records per page.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Get Loanable Assets Data (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/loanable/data",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "loanable", "data"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "vipLevel",
-                                    "value": "1",
-                                    "description": "Defaults to the user's VIP level.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Get Borrow Interest Rate (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/request/interestRate",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "request", "interestRate"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BTC",
-                                    "description": "Max 10 assets, Multiple split by \",\"",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                }
-            ]
+          }
         },
         {
-            "name": "Trade",
-            "item": [
+          "name": "Query VIP Loan Fixed Rate Market (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/fixed/market",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "fixed",
+                "market"
+              ],
+              "variable": [],
+              "query": [
                 {
-                    "name": "VIP Loan Borrow (TRADE)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/borrow",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "borrow"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanAccountId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BTC",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "loanAmount",
-                                    "value": "1.0",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "collateralAccountId",
-                                    "value": "12345678,12345678,12345678",
-                                    "description": "Collateral account ID(s). Multiple split by `,`",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BUSD,USDT,ETH",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "isFlexibleRate",
-                                    "value": "true",
-                                    "description": "TRUE: flexible rate; FALSE: fixed rate",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "loanTerm",
-                                    "value": "30",
-                                    "description": "Mandatory for fixed rate. Optional for flexible rate. e.g. 30/60 days",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "loanCoin",
+                  "value": "USDT",
+                  "description": "Loan coin",
+                  "disabled": false
                 },
                 {
-                    "name": "VIP Loan Fixed Rate Borrow (TRADE)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/fixed/borrow",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "fixed", "borrow"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "supplyRequest",
-                                    "value": "1212:0.12:100;3434:0.13:50",
-                                    "description": "Supply request string, positional encoding (no key). Multiple entries separated by `;`, fields separated by `:`, order: `<requestId>:<interestRate>:<amount>`. Example: `1212:0.12:100;3434:0.13:50`",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "borrowCoin",
-                                    "value": "BUSD",
-                                    "description": "Borrow coin",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "loanTerm",
-                                    "value": "30",
-                                    "description": "Loan term in days",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "borrowUid",
-                                    "value": "12345678",
-                                    "description": "Borrow receiving account UID",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB,ETH,BTC",
-                                    "description": "Collateral coin(s), multiple separated by `,`. Only coin names, no amount (VIP loan collateral amount = entire spot account balance)",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "collateralAccountId",
-                                    "value": "12345,67890,13579",
-                                    "description": "Collateral account ID(s), multiple separated by `,`",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "autoRepay",
-                                    "value": "true",
-                                    "description": "Default: `true`. `true`: auto repay at expiration; `false`: auto-convert to flexible (floating rate) at expiration",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "The value cannot be greater than `60000`",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "duration",
+                  "value": "30",
+                  "description": "Duration in days, minimum 1",
+                  "disabled": true
                 },
                 {
-                    "name": "VIP Loan Renew (TRADE)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/renew",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "renew"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "orderId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "loanTerm",
-                                    "value": "30",
-                                    "description": "30/60 days",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "current",
+                  "value": "1",
+                  "description": "Page number, default 1, minimum 1",
+                  "disabled": true
                 },
                 {
-                    "name": "VIP Loan Repay (TRADE)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/repay",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "repay"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "orderId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "amount",
-                                    "value": "1.0",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "size",
+                  "value": "10",
+                  "description": "Page size, default 10, range [1, 100]",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "The value cannot be greater than `60000`",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
                 }
-            ]
+              ]
+            }
+          }
         },
         {
-            "name": "User Information",
-            "item": [
+          "name": "Get VIP Loan Interest Rate History (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/interestRateHistory",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "interestRateHistory"
+              ],
+              "variable": [],
+              "query": [
                 {
-                    "name": "Get VIP Loan Accrued Interest (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/accruedInterest",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "accruedInterest"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "orderId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BTC",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "If both startTime and endTime are omitted, the most recent 90 days are returned.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "Maximum interval between startTime and endTime is 90 days.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current page number, starting from 1.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records per page.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "coin",
+                  "value": "USDT",
+                  "description": "",
+                  "disabled": false
                 },
                 {
-                    "name": "Check VIP Loan Collateral Account (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/collateral/account",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "collateral", "account"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "orderId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralAccountId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "startTime",
+                  "value": "1623319461670",
+                  "description": "If both startTime and endTime are omitted, the most recent 90 days are returned.",
+                  "disabled": true
                 },
                 {
-                    "name": "Get VIP Loan Ongoing Orders (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/ongoing/orders",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "ongoing", "orders"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "orderId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralAccountId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB,BTC,ETH",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "endTime",
+                  "value": "1641782889000",
+                  "description": "Maximum interval between startTime and endTime is 180 days. Time is based on UTC+0.",
+                  "disabled": true
                 },
                 {
-                    "name": "Get VIP Loan Repayment History (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/repay/history",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "repay", "history"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "orderId",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "If both startTime and endTime are omitted, the most recent 90 days are returned.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "Maximum interval between startTime and endTime is 180 days.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current page number, starting from 1.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records per page.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "current",
+                  "value": "1",
+                  "description": "Current page number, starting from 1.",
+                  "disabled": true
                 },
                 {
-                    "name": "Query Application Status (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v1/loan/vip/request/data",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "vip", "request", "data"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current page number, starting from 1.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of records per page.",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
                 }
-            ]
-        }
-    ],
-    "variable": [
+              ]
+            }
+          }
+        },
         {
-            "key": "prod_url",
-            "value": "https://api.binance.com",
-            "type": "string"
+          "name": "Get Loanable Assets Data (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/loanable/data",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "loanable",
+                "data"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "loanCoin",
+                  "value": "BUSD",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "vipLevel",
+                  "value": "1",
+                  "description": "Defaults to the user's VIP level.",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Borrow Interest Rate (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/request/interestRate",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "request",
+                "interestRate"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "loanCoin",
+                  "value": "BTC",
+                  "description": "Max 10 assets, Multiple split by \",\"",
+                  "disabled": false
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
         }
-    ]
+      ]
+    },
+    {
+      "name": "Trade",
+      "item": [
+        {
+          "name": "VIP Loan Borrow (TRADE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/borrow",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "borrow"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "loanAccountId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "loanCoin",
+                  "value": "BTC",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "loanAmount",
+                  "value": "1.0",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "collateralAccountId",
+                  "value": "12345678,12345678,12345678",
+                  "description": "Collateral account ID(s). Multiple split by `,`",
+                  "disabled": false
+                },
+                {
+                  "key": "collateralCoin",
+                  "value": "BUSD,USDT,ETH",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "isFlexibleRate",
+                  "value": "true",
+                  "description": "TRUE: flexible rate; FALSE: fixed rate",
+                  "disabled": false
+                },
+                {
+                  "key": "loanTerm",
+                  "value": "30",
+                  "description": "Mandatory for fixed rate. Optional for flexible rate. e.g. 30/60 days",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "VIP Loan Fixed Rate Borrow (TRADE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/fixed/borrow",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "fixed",
+                "borrow"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "supplyRequest",
+                  "value": "1212:0.12:100;3434:0.13:50",
+                  "description": "Supply request string, positional encoding (no key). Multiple entries separated by `;`, fields separated by `:`, order: `<requestId>:<interestRate>:<amount>`. Example: `1212:0.12:100;3434:0.13:50`",
+                  "disabled": false
+                },
+                {
+                  "key": "borrowCoin",
+                  "value": "BUSD",
+                  "description": "Borrow coin",
+                  "disabled": false
+                },
+                {
+                  "key": "loanTerm",
+                  "value": "30",
+                  "description": "Loan term in days",
+                  "disabled": false
+                },
+                {
+                  "key": "borrowUid",
+                  "value": "12345678",
+                  "description": "Borrow receiving account UID",
+                  "disabled": false
+                },
+                {
+                  "key": "collateralCoin",
+                  "value": "BNB,ETH,BTC",
+                  "description": "Collateral coin(s), multiple separated by `,`. Only coin names, no amount (VIP loan collateral amount = entire spot account balance)",
+                  "disabled": false
+                },
+                {
+                  "key": "collateralAccountId",
+                  "value": "12345,67890,13579",
+                  "description": "Collateral account ID(s), multiple separated by `,`",
+                  "disabled": false
+                },
+                {
+                  "key": "autoRepay",
+                  "value": "true",
+                  "description": "Default: `true`. `true`: auto repay at expiration; `false`: auto-convert to flexible (floating rate) at expiration",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "The value cannot be greater than `60000`",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "VIP Loan Renew (TRADE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/renew",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "renew"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "loanTerm",
+                  "value": "30",
+                  "description": "30/60 days",
+                  "disabled": false
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "VIP Loan Repay (TRADE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/repay",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "repay"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "amount",
+                  "value": "1.0",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Information",
+      "item": [
+        {
+          "name": "Get VIP Loan Accrued Interest (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/accruedInterest",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "accruedInterest"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "loanCoin",
+                  "value": "BTC",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "startTime",
+                  "value": "1623319461670",
+                  "description": "If both startTime and endTime are omitted, the most recent 90 days are returned.",
+                  "disabled": true
+                },
+                {
+                  "key": "endTime",
+                  "value": "1641782889000",
+                  "description": "Maximum interval between startTime and endTime is 90 days.",
+                  "disabled": true
+                },
+                {
+                  "key": "current",
+                  "value": "1",
+                  "description": "Current page number, starting from 1.",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of records per page.",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Check VIP Loan Collateral Account (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/collateral/account",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "collateral",
+                "account"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "collateralAccountId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get VIP Loan Ongoing Orders (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/ongoing/orders",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "ongoing",
+                "orders"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "collateralAccountId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "loanCoin",
+                  "value": "BUSD",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "collateralCoin",
+                  "value": "BNB,BTC,ETH",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "current",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get VIP Loan Repayment History (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/repay/history",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "repay",
+                "history"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "loanCoin",
+                  "value": "BUSD",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "startTime",
+                  "value": "1623319461670",
+                  "description": "If both startTime and endTime are omitted, the most recent 90 days are returned.",
+                  "disabled": true
+                },
+                {
+                  "key": "endTime",
+                  "value": "1641782889000",
+                  "description": "Maximum interval between startTime and endTime is 180 days.",
+                  "disabled": true
+                },
+                {
+                  "key": "current",
+                  "value": "1",
+                  "description": "Current page number, starting from 1.",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of records per page.",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Query Application Status (USER_DATA)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-MBX-APIKEY",
+                "value": "",
+                "description": "API KEY",
+                "disabled": false
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/sapi/v1/loan/vip/request/data",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "sapi",
+                "v1",
+                "loan",
+                "vip",
+                "request",
+                "data"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "current",
+                  "value": "1",
+                  "description": "Current page number, starting from 1.",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "recvWindow",
+                  "value": "5000",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "timestamp",
+                  "value": "",
+                  "description": "UTC timestamp in ms",
+                  "disabled": false
+                },
+                {
+                  "key": "signature",
+                  "value": "",
+                  "description": "Signature",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "prod_url",
+      "value": "https://api.binance.com",
+      "type": "string"
+    }
+  ]
 }

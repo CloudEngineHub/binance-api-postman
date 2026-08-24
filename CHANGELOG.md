@@ -1,5 +1,85 @@
 # Changelog
 
+## 56.0.0 - 2026-08-24
+
+**Derivatives Trading Coin Futures**
+
+### Changed (4)
+
+- Added parameter `contractType`
+  - affected endpoints:
+    - `GET /futures/data/globalLongShortAccountRatio`
+    - `GET /futures/data/topLongShortAccountRatio`
+    - `GET /futures/data/topLongShortPositionRatio`
+- Added parameter `pair`
+  - affected endpoints:
+    - `GET /futures/data/topLongShortAccountRatio`
+- Deleted parameter `symbol`
+  - affected endpoints:
+    - `GET /futures/data/topLongShortAccountRatio`
+- Modified parameter `contractType`:
+  - required: `true` → `false`
+  - enum removed: `ALL`
+  - affected endpoints:
+    - `GET /futures/data/openInterestHist`
+
+**Derivatives Trading Portfolio Margin**
+
+### Changed (7)
+
+- Marked `DELETE /papi/v1/um/conditional/allOpenOrders` as deprecated.
+- Marked `DELETE /papi/v1/um/conditional/order` as deprecated.
+- Marked `GET /papi/v1/um/conditional/allOrders` as deprecated.
+- Marked `GET /papi/v1/um/conditional/openOrder` as deprecated.
+- Marked `GET /papi/v1/um/conditional/openOrders` as deprecated.
+- Marked `GET /papi/v1/um/conditional/orderHistory` as deprecated.
+- Marked `POST /papi/v1/um/conditional/order` as deprecated
+
+**Margin Trading**
+
+### Changed (1)
+
+- Modified parameter `sideEffectType`:
+  - enum added: `AUTO_BORROW_REPAY`
+  - affected endpoints:
+    - `POST /sapi/v1/margin/order/oto`
+    - `POST /sapi/v1/margin/order/otoco`
+
+**Sub Account**
+
+### Changed (3)
+
+- Added parameter `productType`
+  - affected endpoints:
+    - `GET /sapi/v1/sub-account/futures/move-position`
+- Modified parameter `productType`:
+  - enum added: `OPTION`
+  - affected endpoints:
+    - `POST /sapi/v1/sub-account/futures/move-position`
+
+**W3W Prediction**
+
+### Added (10)
+
+- `POST /sapi/v1/w3w/wallet/prediction/deposit/apply`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/create`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/detail`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/events`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/fulfil`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/list`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/preview`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/remove`
+- `POST /sapi/v1/w3w/wallet/prediction/otc/blocktrade/reserved-balances`
+- `POST /sapi/v1/w3w/wallet/prediction/withdraw/apply`
+
+**Wallet**
+
+### Changed (4)
+
+- Added parameter `needBalanceDetail`
+  - affected endpoints:
+    - `GET /sapi/v1/asset/wallet/balance`
+
 ## 55.1.0 - 2026-08-07
 
 ### Added (1)
