@@ -1,5 +1,42 @@
 # Changelog
 
+## 56.1.0 - 2026-08-25
+
+**Algo**
+
+### Changed (2)
+
+- Added parameter `clientAlgoId`
+  - affected endpoints:
+    - `DELETE /sapi/v1/algo/futures/order`
+    - `DELETE /sapi/v1/algo/spot/order`
+- Modified parameter `algoId`:
+  - required: `true` → `false`
+  - affected endpoints:
+    - `DELETE /sapi/v1/algo/futures/order`
+    - `DELETE /sapi/v1/algo/spot/order`
+
+**Derivatives Trading Portfolio Margin**
+
+### Changed (2)
+
+- Added parameter `closePosition`
+  - affected endpoints:
+    - `POST /papi/v1/um/algo/order`
+- Modified parameter `quantity`:
+  - required: `true` → `false`
+  - affected endpoints:
+    - `POST /papi/v1/um/algo/order`
+
+**Derivatives Trading USDS Futures**
+
+### Changed (1)
+
+- Modified parameter `symbol`:
+  - required: `true` → `false`
+  - affected endpoints:
+    - `GET /fapi/v1/allOrders`
+
 ## 56.0.0 - 2026-08-24
 
 **Derivatives Trading Coin Futures**

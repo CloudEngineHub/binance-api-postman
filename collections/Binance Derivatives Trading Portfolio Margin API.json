@@ -3618,8 +3618,8 @@
                 {
                   "key": "quantity",
                   "value": "0.01",
-                  "description": "Order quantity",
-                  "disabled": false
+                  "description": "Order quantity. Cannot be sent with `closePosition`=`true`(Close-All)",
+                  "disabled": true
                 },
                 {
                   "key": "price",
@@ -3646,6 +3646,12 @@
                   "disabled": true
                 },
                 {
+                  "key": "closePosition",
+                  "value": "true",
+                  "description": "Close-All, used with `STOP_MARKET` or `TAKE_PROFIT_MARKET`.",
+                  "disabled": true
+                },
+                {
                   "key": "priceProtect",
                   "value": "true",
                   "description": "Price protection. Default `false`",
@@ -3654,7 +3660,7 @@
                 {
                   "key": "reduceOnly",
                   "value": "true",
-                  "description": "Cannot be sent in Hedge Mode",
+                  "description": "Cannot be sent in Hedge Mode; cannot be sent with `closePosition`=`true`",
                   "disabled": true
                 },
                 {
