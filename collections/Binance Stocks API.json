@@ -1,8 +1,8 @@
 {
     "info": {
-        "name": "Crypto Loan REST API",
+        "name": "Stocks Trading REST API",
         "description": {
-            "content": "Access Binance Crypto Loans to query assets, subscribe to loans, and manage loan positions.",
+            "content": "REST APIs for Binance Stocks Trading. All endpoints under `/sapi/v1/equity/*`.",
             "type": "text/markdown"
         },
         "version": "1.0.0",
@@ -149,10 +149,10 @@
     ],
     "item": [
         {
-            "name": "Stable Rate",
+            "name": "Tokenized",
             "item": [
                 {
-                    "name": "Get Loan Borrow History (USER_DATA)",
+                    "name": "Tokenized Convert Status (USER_DATA)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -174,57 +174,27 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v1/loan/borrow/history",
+                            "raw": "{{url}}/sapi/v1/equity/tokenized/convert-status",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "borrow", "history"],
+                            "path": ["sapi", "v1", "equity", "tokenized", "convert-status"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "orderId",
-                                    "value": "1",
-                                    "description": "orderId in `POST /sapi/v1/loan/borrow`",
-                                    "disabled": true
+                                    "key": "issuerRequestId",
+                                    "value": "mint-20260505-8f3b9e1a2d3c4b5a",
+                                    "description": "Convert request id returned by `/tokenized/mint` or `/redeem`.",
+                                    "disabled": false
                                 },
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current querying page",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
-                                    "disabled": true
+                                    "key": "convertType",
+                                    "value": "MINT",
+                                    "description": "`MINT` or `REDEEM`.",
+                                    "disabled": false
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -244,7 +214,7 @@
                     }
                 },
                 {
-                    "name": "Get Crypto Loans Income History (USER_DATA)",
+                    "name": "Tokenized Convert History (USER_DATA)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -266,45 +236,39 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v1/loan/income",
+                            "raw": "{{url}}/sapi/v1/equity/tokenized/history",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "income"],
+                            "path": ["sapi", "v1", "equity", "tokenized", "history"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "asset",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "type",
-                                    "value": "borrowIn",
-                                    "description": "All types will be returned by default.",
-                                    "disabled": true
-                                },
-                                {
                                     "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
+                                    "value": "1735800000000",
+                                    "description": "Start time (ms epoch).",
                                     "disabled": true
                                 },
                                 {
                                     "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
+                                    "value": "1735900000000",
+                                    "description": "End time (ms epoch).",
                                     "disabled": true
                                 },
                                 {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
+                                    "key": "lastId",
+                                    "value": "10019",
+                                    "description": "Last record id from the previous page. Omit (or leave unset) to fetch the first page.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "size",
+                                    "value": "20",
+                                    "description": "Page size. Default `20`, max `100`.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -324,9 +288,9 @@
                     }
                 },
                 {
-                    "name": "Get Loan LTV Adjustment History (USER_DATA)",
+                    "name": "Tokenized Mint (TRADE)",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "X-MBX-APIKEY",
@@ -346,57 +310,33 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v1/loan/ltv/adjustment/history",
+                            "raw": "{{url}}/sapi/v1/equity/tokenized/mint",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "ltv", "adjustment", "history"],
+                            "path": ["sapi", "v1", "equity", "tokenized", "mint"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "orderId",
+                                    "key": "underlyingAsset",
+                                    "value": "AAPL",
+                                    "description": "Underlying US-equity ticker, e.g. `AAPL`, `TSLA`. Resolved against the active-symbol list; unknown tickers return `-26004`. The target tokenized asset is looked up from this field via `/market/tokenized-assets`.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "underlyingAssetAmount",
                                     "value": "1",
-                                    "description": "orderId in `POST /sapi/v1/loan/borrow`",
-                                    "disabled": true
+                                    "description": "Quantity of the underlying asset to mint from. Must be > 0.",
+                                    "disabled": false
                                 },
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current querying page",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
+                                    "key": "clientOrderId",
+                                    "value": "mint-client-id-32chars-0000000001",
+                                    "description": "Client order id for idempotency. Format `^[a-zA-Z0-9-_]{32,36}$`. Auto-generated when omitted.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -416,9 +356,9 @@
                     }
                 },
                 {
-                    "name": "Get Loan Repayment History (USER_DATA)",
+                    "name": "Tokenized Redeem (TRADE)",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "X-MBX-APIKEY",
@@ -438,57 +378,33 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v1/loan/repay/history",
+                            "raw": "{{url}}/sapi/v1/equity/tokenized/redeem",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v1", "loan", "repay", "history"],
+                            "path": ["sapi", "v1", "equity", "tokenized", "redeem"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "orderId",
+                                    "key": "tokenizedAsset",
+                                    "value": "AAPLB",
+                                    "description": "Tokenized asset to redeem, e.g. `AAPLB`. Not a US-equity ticker — this is the on-chain tokenized asset identifier. Unknown asset returns `-1102` (the message currently says the parameter was empty/malformed, but it was in fact sent — it is simply unknown). The target underlying ticker is looked up from this field via `/market/tokenized-assets`.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "tokenizedAssetAmount",
                                     "value": "1",
-                                    "description": "orderId in `POST /sapi/v1/loan/borrow`",
-                                    "disabled": true
+                                    "description": "Quantity of the tokenized asset to redeem. Must be > 0.",
+                                    "disabled": false
                                 },
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current querying page",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
+                                    "key": "clientOrderId",
+                                    "value": "redeem-client-id-32chars-000000001",
+                                    "description": "Client order id for idempotency. Format `^[a-zA-Z0-9-_]{32,36}$`. Auto-generated when omitted.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -510,10 +426,122 @@
             ]
         },
         {
-            "name": "Flexible Rate",
+            "name": "Market Data",
             "item": [
                 {
-                    "name": "Flexible Loan Adjust LTV (TRADE)",
+                    "name": "Exchange Info (MARKET_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v1/equity/market/exchangeInfo",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v1", "equity", "market", "exchangeInfo"],
+                            "variable": [],
+                            "query": [
+                                {
+                                    "key": "symbol",
+                                    "value": "AAPL",
+                                    "description": "Filter to a single US-equity ticker, e.g. `AAPL`. When omitted, returns all active symbols. An unknown ticker returns an empty `symbols` array (HTTP 200), not an error.",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Latest Quote (MARKET_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v1/equity/market/quote",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v1", "equity", "market", "quote"],
+                            "variable": [],
+                            "query": [
+                                {
+                                    "key": "symbol",
+                                    "value": "AAPL",
+                                    "description": "US-equity ticker, e.g. `AAPL`, `TSLA`. Case-insensitive; uppercased server-side.",
+                                    "disabled": false
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Tokenized Assets (MARKET_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v1/equity/market/tokenized-assets",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v1", "equity", "market", "tokenized-assets"],
+                            "variable": [],
+                            "query": []
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Trade",
+            "item": [
+                {
+                    "name": "Cancel Equity Order (TRADE)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -535,39 +563,21 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/adjust/ltv",
+                            "raw": "{{url}}/sapi/v1/equity/order/cancel",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "adjust", "ltv"],
+                            "path": ["sapi", "v1", "equity", "order", "cancel"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "adjustmentAmount",
-                                    "value": "1",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "direction",
-                                    "value": "ADDITIONAL",
-                                    "description": "",
+                                    "key": "orderId",
+                                    "value": "c3c58f49-7b0d-4b9e-a2db-1a2f9a3b8c71",
+                                    "description": "Equity order id returned by `/order/place` or a query endpoint.",
                                     "disabled": false
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -587,7 +597,7 @@
                     }
                 },
                 {
-                    "name": "Flexible Loan Borrow (TRADE)",
+                    "name": "Cancel All Equity Orders (TRADE)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -609,39 +619,15 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/borrow",
+                            "raw": "{{url}}/sapi/v1/equity/order/cancel-all",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "borrow"],
+                            "path": ["sapi", "v1", "equity", "order", "cancel-all"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "loanAmount",
-                                    "value": "1",
-                                    "description": "Mandatory when collateralAmount is empty",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "collateralAmount",
-                                    "value": "1",
-                                    "description": "Mandatory when loanAmount is empty",
-                                    "disabled": true
-                                },
-                                {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -661,7 +647,7 @@
                     }
                 },
                 {
-                    "name": "Get Flexible Loan Borrow History (USER_DATA)",
+                    "name": "Equity Order Detail (USER_DATA)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -683,51 +669,125 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/borrow/history",
+                            "raw": "{{url}}/sapi/v1/equity/order/detail",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "borrow", "history"],
+                            "path": ["sapi", "v1", "equity", "order", "detail"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
+                                    "key": "orderId",
+                                    "value": "c3c58f49-7b0d-4b9e-a2db-1a2f9a3b8c71",
+                                    "description": "Equity order id. Either `orderId` or `clientOrderId` must be provided.",
                                     "disabled": true
                                 },
                                 {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
+                                    "key": "clientOrderId",
+                                    "value": "web_2c9c92b74f1e4a7c8f3b9e1a2d3c4b5a",
+                                    "description": "Client-supplied order id. Either `orderId` or `clientOrderId` must be provided.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "recvWindow",
+                                    "value": "5000",
+                                    "description": "The value cannot be greater than `60000`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "timestamp",
+                                    "value": "",
+                                    "description": "UTC timestamp in ms",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "signature",
+                                    "value": "",
+                                    "description": "Signature",
+                                    "disabled": false
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Equity Order History (USER_DATA)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-MBX-APIKEY",
+                                "value": "",
+                                "description": "API KEY",
+                                "disabled": false
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "description": "",
+                                "disabled": false
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": []
+                        },
+                        "url": {
+                            "raw": "{{url}}/sapi/v1/equity/order/history",
+                            "host": ["{{url}}"],
+                            "path": ["sapi", "v1", "equity", "order", "history"],
+                            "variable": [],
+                            "query": [
+                                {
+                                    "key": "symbol",
+                                    "value": "NVDA",
+                                    "description": "US-equity ticker filter, e.g. `NVDA`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "orderType",
+                                    "value": "MARKET",
+                                    "description": "Order type filter: `MARKET` / `LIMIT`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "side",
+                                    "value": "BUY",
+                                    "description": "Side filter: `BUY` / `SELL`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "orderStatus",
+                                    "value": "FILLED,CANCELED",
+                                    "description": "Comma-separated status filter. Allowed values: `FILLED`, `PARTIALLY_FILLED`, `CANCELED`, `EXPIRED`, `REJECTED`.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
+                                    "value": "1735800000000",
+                                    "description": "Start time (ms epoch).",
+                                    "disabled": false
                                 },
                                 {
                                     "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
+                                    "value": "1735900000000",
+                                    "description": "End time (ms epoch).",
+                                    "disabled": false
                                 },
                                 {
                                     "key": "current",
                                     "value": "1",
-                                    "description": "Current querying page",
+                                    "description": "Page number, 1-based. Default `1`.",
                                     "disabled": true
                                 },
                                 {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
+                                    "key": "size",
+                                    "value": "20",
+                                    "description": "Page size. Default `20`, max `100`.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -747,7 +807,7 @@
                     }
                 },
                 {
-                    "name": "Get Flexible Loan Collateral Assets Data (USER_DATA)",
+                    "name": "Current Open Orders (USER_DATA)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -769,21 +829,15 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/collateral/data",
+                            "raw": "{{url}}/sapi/v1/equity/order/open-orders",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "collateral", "data"],
+                            "path": ["sapi", "v1", "equity", "order", "open-orders"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -803,317 +857,7 @@
                     }
                 },
                 {
-                    "name": "Get Flexible Loan Liquidation History (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/liquidation/history",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "liquidation", "history"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current querying page",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "Request validity window in milliseconds",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Get Flexible Loan Assets Data (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/loanable/data",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "loanable", "data"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "Request validity window in milliseconds",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Get Flexible Loan LTV Adjustment History (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/ltv/adjustment/history",
-                            "host": ["{{url}}"],
-                            "path": [
-                                "sapi",
-                                "v2",
-                                "loan",
-                                "flexible",
-                                "ltv",
-                                "adjustment",
-                                "history"
-                            ],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current querying page",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "Request validity window in milliseconds",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Get Flexible Loan Ongoing Orders (USER_DATA)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-MBX-APIKEY",
-                                "value": "",
-                                "description": "API KEY",
-                                "disabled": false
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "description": "",
-                                "disabled": false
-                            }
-                        ],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": []
-                        },
-                        "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/ongoing/orders",
-                            "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "ongoing", "orders"],
-                            "variable": [],
-                            "query": [
-                                {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current querying page",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "recvWindow",
-                                    "value": "5000",
-                                    "description": "Request validity window in milliseconds",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Flexible Loan Repay (TRADE)",
+                    "name": "Place Equity Order (TRADE)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -1135,51 +879,87 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/repay",
+                            "raw": "{{url}}/sapi/v1/equity/order/place",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "repay"],
+                            "path": ["sapi", "v1", "equity", "order", "place"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
+                                    "key": "symbol",
+                                    "value": "AAPL",
+                                    "description": "US stock ticker, e.g. `AAPL`, `TSLA`. Must be a symbol with tokenization enabled — check via `/market/tokenized-assets`.",
                                     "disabled": false
                                 },
                                 {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
+                                    "key": "quoteAsset",
+                                    "value": "USDC",
+                                    "description": "Quote asset. Defaults to `USDC`; must be within the server's allowed set.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "side",
+                                    "value": "BUY",
+                                    "description": "`BUY` / `SELL`.",
                                     "disabled": false
                                 },
                                 {
-                                    "key": "repayAmount",
+                                    "key": "orderType",
+                                    "value": "MARKET",
+                                    "description": "`MARKET` / `LIMIT`.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "price",
+                                    "value": "180.50",
+                                    "description": "**Required** for `LIMIT`; **forbidden** for `MARKET`. Maximum 2 decimal places.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "quantity",
                                     "value": "1",
-                                    "description": "",
-                                    "disabled": false
+                                    "description": "**Required** for `LIMIT` (both sides) and `SELL MARKET`; **forbidden** for `BUY MARKET`.",
+                                    "disabled": true
                                 },
                                 {
-                                    "key": "collateralReturn",
+                                    "key": "notional",
+                                    "value": "1000.00",
+                                    "description": "**Required** for `BUY MARKET`; **forbidden** for `LIMIT` and `SELL MARKET`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "timeInForce",
+                                    "value": "DAY",
+                                    "description": "`DAY` (default) / `GTC`. `GTC` is only supported for `LIMIT` orders; a fractional-share `GTC` order must be paired with `tradingSession = EXTENDED` or `24H`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "tradingSession",
+                                    "value": "RTH",
+                                    "description": "`RTH` / `EXTENDED` / `24H`. **Required** for `LIMIT`; **forbidden** for `MARKET`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "walletType",
+                                    "value": "CARD",
+                                    "description": "Payment wallet for `BUY` orders: `CARD` (default) / `MAIN`. `SELL` orders always settle to `CARD`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "clientOrderId",
+                                    "value": "web_2c9c92b74f1e4a7c8f3b9e1a2d3c4b5a",
+                                    "description": "Client-supplied order id. Format `^[a-zA-Z0-9-_]{32,36}$`. Auto-generated when omitted.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "tokenize",
                                     "value": "true",
-                                    "description": "TRUE: Return extra collateral to spot account; FALSE: Keep extra collateral in the order and lower LTV.",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "fullRepayment",
-                                    "value": "false",
-                                    "description": "TRUE: Full repayment; FALSE: Partial repayment based on loan amount",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "repaymentType",
-                                    "value": "1",
-                                    "description": "1: Repayment with loan asset; 2: Repayment with collateral",
+                                    "description": "Whether to tokenize the purchased stock asset upon settlement. Default `true`. Set to `false` to receive the underlying equity directly instead of a tokenized asset.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -1199,7 +979,7 @@
                     }
                 },
                 {
-                    "name": "Get Flexible Loan Repayment History (USER_DATA)",
+                    "name": "Equity Trade History (USER_DATA)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1221,51 +1001,57 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/repay/history",
+                            "raw": "{{url}}/sapi/v1/equity/trade/history",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "repay", "history"],
+                            "path": ["sapi", "v1", "equity", "trade", "history"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
+                                    "key": "symbol",
+                                    "value": "NVDA",
+                                    "description": "US-equity ticker filter, e.g. `NVDA`.",
                                     "disabled": true
                                 },
                                 {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
+                                    "key": "side",
+                                    "value": "BUY",
+                                    "description": "Side filter: `BUY` / `SELL`.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "orderId",
+                                    "value": "c3c58f49-7b0d-4b9e-a2db-1a2f9a3b8c71",
+                                    "description": "Narrow the result to executions of a single order.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
+                                    "value": "1735800000000",
+                                    "description": "Start time (ms epoch).",
+                                    "disabled": false
                                 },
                                 {
                                     "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
+                                    "value": "1735900000000",
+                                    "description": "End time (ms epoch).",
+                                    "disabled": false
                                 },
                                 {
                                     "key": "current",
                                     "value": "1",
-                                    "description": "Current querying page",
+                                    "description": "Page number, 1-based. Default `1`.",
                                     "disabled": true
                                 },
                                 {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
+                                    "key": "size",
+                                    "value": "20",
+                                    "description": "Page size. Default `20`, max `100`.",
                                     "disabled": true
                                 },
                                 {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
                                 },
                                 {
@@ -1283,11 +1069,16 @@
                             ]
                         }
                     }
-                },
+                }
+            ]
+        },
+        {
+            "name": "User Data Streams",
+            "item": [
                 {
-                    "name": "Check Collateral Flexible Repay Rate (USER_DATA)",
+                    "name": "Create / Renew Listen Key (USER_STREAM)",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "X-MBX-APIKEY",
@@ -1307,49 +1098,30 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/flexible/repay/rate",
+                            "raw": "{{url}}/sapi/v1/equity/listenKey",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "flexible", "repay", "rate"],
+                            "path": ["sapi", "v1", "equity", "listenKey"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "loanCoin",
-                                    "value": "BUSD",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "collateralCoin",
-                                    "value": "BNB",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
+                                    "description": "The value cannot be greater than `60000`.",
                                     "disabled": true
-                                },
-                                {
-                                    "key": "timestamp",
-                                    "value": "",
-                                    "description": "UTC timestamp in ms",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "signature",
-                                    "value": "",
-                                    "description": "Signature",
-                                    "disabled": false
                                 }
                             ]
                         }
                     }
-                },
+                }
+            ]
+        },
+        {
+            "name": "Account",
+            "item": [
                 {
-                    "name": "Get Flexible Loan Interest Rate History (USER_DATA)",
+                    "name": "Sign US Equity Disclaimer (TRADE)",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "X-MBX-APIKEY",
@@ -1369,46 +1141,16 @@
                             "urlencoded": []
                         },
                         "url": {
-                            "raw": "{{url}}/sapi/v2/loan/interestRateHistory",
+                            "raw": "{{url}}/sapi/v1/equity/account/disclaimer",
                             "host": ["{{url}}"],
-                            "path": ["sapi", "v2", "loan", "interestRateHistory"],
+                            "path": ["sapi", "v1", "equity", "account", "disclaimer"],
                             "variable": [],
                             "query": [
                                 {
-                                    "key": "coin",
-                                    "value": "USDT",
-                                    "description": "",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "startTime",
-                                    "value": "1623319461670",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "endTime",
-                                    "value": "1641782889000",
-                                    "description": "",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "current",
-                                    "value": "1",
-                                    "description": "Current querying page",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "description": "Number of records to return",
-                                    "disabled": true
-                                },
-                                {
                                     "key": "recvWindow",
                                     "value": "5000",
-                                    "description": "Request validity window in milliseconds",
-                                    "disabled": false
+                                    "description": "The value cannot be greater than `60000`.",
+                                    "disabled": true
                                 },
                                 {
                                     "key": "timestamp",

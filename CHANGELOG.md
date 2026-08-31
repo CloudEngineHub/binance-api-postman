@@ -1,5 +1,11 @@
 # Changelog
 
+## 56.2.0 - 2026-08-31
+
+### Added (1)
+
+- Added Stocks Trading API.
+
 ## 56.1.0 - 2026-08-25
 
 **Algo**
